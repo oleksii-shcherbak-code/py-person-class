@@ -9,22 +9,15 @@ class Person:
 
 def create_person_list(people: list) -> list:
     Person.people = {}
-    person_list = []
+    person_list = [Person(p["name"], p["age"]) for p in people]
 
-    for person_dict in people:
-        person = Person(person_dict["name"], person_dict["age"])
-        person_list.append(person)
-        if "wife" in person_dict and person_dict["wife"]:
-            person._wife_name = person_dict["wife"]
-        elif "husband" in person_dict and person_dict["husband"]:
-            person._husband_name = person_dict["husband"]
+    for i, person_dict in enumerate(people):
+        wife_name = person_dict.get("wife")
+        if wife_name:
+            person_list[i].wife = Person.people[wife_name]
 
-    for person in person_list:
-        if hasattr(person, "_wife_name"):
-            person.wife = Person.people[person._wife_name]
-            delattr(person, "_wife_name")
-        elif hasattr(person, "_husband_name"):
-            person.husband = Person.people[person._husband_name]
-            delattr(person, "_husband_name")
+        husband_name = person_dict.get("husband")
+        if husband_name:
+            person_list[i].husband = Person.people[husband_name]
 
     return person_list
